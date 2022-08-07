@@ -8,7 +8,7 @@ COPY setup.py .
 COPY requirements.txt .
 COPY garmin_redis/ garmin_redis/
 
-RUN chmod +x garmin_redis/redis_hello_world.py
+RUN chmod +x garmin_redis/redis_helpers.py
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt

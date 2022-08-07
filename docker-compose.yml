@@ -10,4 +10,4 @@ services:
     links:
       - redis
     container_name: garmin
-    entrypoint: python garmin_redis/redis_hello_world.py
+    entrypoint: python garmin_redis/redis_helpers.py
