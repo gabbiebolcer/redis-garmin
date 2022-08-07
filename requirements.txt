@@ -1,0 +1,2 @@
+garminconnect==0.1.45
+pandas==1.4.3
