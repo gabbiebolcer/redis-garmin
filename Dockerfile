@@ -4,9 +4,11 @@ RUN python -m venv /opt/venv
 ENV PATH = "/opt/venv/bin:$PATH"
 
 WORKDIR /home/
-COPY garmin_redis/ $WORKDIR/garmin_redis
-COPY setup.py $WORKDIR
-COPY requirements.txt $WORKDIR
+COPY setup.py .
+COPY requirements.txt .
+COPY garmin_redis/ garmin_redis/
+
+RUN chmod +x garmin_redis/redis_hello_world.py
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
