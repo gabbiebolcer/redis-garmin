@@ -2,7 +2,10 @@
 import os
 import datetime
 
+import click
 import garminconnect
+
+from garmin_redis import redis_helpers
 
 
 def garmin_connection():
@@ -15,33 +18,26 @@ def garmin_connection():
     return gc
 
 
-def get_today_activity_data(gc):
-    today = datetime.date.today().isoformat()
-    today_stats = gc.get_stats(today)
-    print("Today's Activities:")
-    print(today_stats)
+def fetch_todays_data(read_only):
+    garmin_con = garmin_connection()
+    today = datetime.date.today()
+    data_to_fetch = {
+        'User Stats': garmin_con.get_stats,
+        'Sleep': garmin_con.get_sleep_data,
+        'Heart Rate': garmin_con.get_heart_rates,
+        'Activities': garmin_con.get_user_summary,
+    }
+    for dtype, func in data_to_fetch.items():
+        print(f"Fetching todays {dtype}")
+        stats = func(today)
+        if not read_only:
+            data = {f"{today} {dtype}": stats}
+            redis_helpers.redis_commit(data=data)
 
-
-def get_heartrate_data(gc):
-    today = datetime.date.today().isoformat()
-    todays_heartrate = gc.get_heart_rates(today)
-    print("Today's Heart Rates:")
-    print(todays_heartrate)
-
-
-def get_sleep_data(gc):
-    today = datetime.date.today().isoformat()
-    todays_sleep_data = gc.get_sleep_data(today)
-    print("Today's sleep data: ")
-    print(todays_sleep_data)
-
-
-def fetch_all_data():
-    con = garmin_connection()
-    get_today_activity_data(con)
-    get_heartrate_data(con)
-    get_sleep_data(con)
-
+@click.command()
+@click.option('--readonly', '-R', is_flag=True, default=False, help="Don't commit results to redis db.")
+def cli(readonly):
+    fetch_todays_data(readonly)
 
 if __name__ == '__main__':
-    fetch_all_data()
+    cli()
