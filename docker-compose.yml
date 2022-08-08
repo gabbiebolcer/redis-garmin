@@ -7,6 +7,9 @@ services:
     container_name: redis
   garmin:
     build: .
+    environment:
+      - email=$EMAIL
+      - password=$PASS
     links:
       - redis
     container_name: garmin
