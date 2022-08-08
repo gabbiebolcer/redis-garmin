@@ -9,6 +9,12 @@ from garmin_redis import redis_helpers
 
 
 def garmin_connection():
+    """Creates connection to Garmin Connect.
+    
+    Username and Password should be set to environment variables.
+
+    #TODO find better way to do this
+    """
     email = os.getenv('EMAIL')
     pw = os.getenv('PASSWORD')
     if email is None or pw is None:
@@ -19,6 +25,17 @@ def garmin_connection():
 
 
 def fetch_todays_data(read_only):
+    """Fetch today's Garmin data. 
+
+    This data should include some basic info about steps, sleep, body battery,
+    heart rate, and any activities done today.
+
+
+    Parameters:
+    -----------
+        read_only (bool): if true, commit results to db
+    
+    """
     garmin_con = garmin_connection()
     today = datetime.date.today()
     data_to_fetch = {
